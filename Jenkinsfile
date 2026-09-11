@@ -7,11 +7,13 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
+        stage('global stage'){
+            agent{
+                docker{
+                    image 'maven:latest'
+                    args '-u root --entrypoint='
+                }
             }
-        }
 
         stage('Test') {
             steps {
