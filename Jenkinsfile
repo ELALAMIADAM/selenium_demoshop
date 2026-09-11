@@ -9,12 +9,11 @@ pipeline {
     options {
         timestamps()
     }
-// apt-get update
     stages {
         stage('Install ChromeDriver') {
             steps {
                 sh '''
-                    
+                    apt-get update
                     apt-get install -y --no-install-recommends chromium chromium-driver xvfb
                     rm -rf /var/lib/apt/lists/*
                 '''
@@ -24,7 +23,7 @@ pipeline {
         stage('Test') {
             steps {
                 dir('demoshop') {
-                    sh 'xvfb-run -a mvn -B clean test'
+                    sh 'mvn -B clean test'
                 }
             }
         }
