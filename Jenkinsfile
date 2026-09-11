@@ -1,24 +1,30 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.9.9-eclipse-temurin-17'
+            args '--user root'
+        }
+    }
 
     options {
         timestamps()
-        skipDefaultCheckout(true)
     }
 
     stages {
-        stage('global stage'){
-            agent{
-                docker{
-                    image 'maven:latest'
-                    args '-u root --entrypoint='
-                }
+        stage('Install ChromeDriver') {
+            steps {
+                sh '''
+                    apt-get update
+                    apt-get install -y --no-install-recommends chromium chromium-driver xvfb
+                    rm -rf /var/lib/apt/lists/*
+                '''
             }
+        }
 
         stage('Test') {
             steps {
                 dir('demoshop') {
-                    bat 'mvn -B clean test'
+                    sh 'xvfb-run -a mvn -B clean test'
                 }
             }
         }
@@ -30,5 +36,4 @@ pipeline {
             archiveArtifacts artifacts: 'demoshop/target/allure-results/**', allowEmptyArchive: true
         }
     }
-}
 }
