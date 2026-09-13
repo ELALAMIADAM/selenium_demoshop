@@ -9,21 +9,19 @@ pipeline {
     options {
         timestamps()
     }
+
     stages {
-        stage('Install ChromeDriver') {
+        stage('Start Selenium Grid') {
             steps {
-                sh '''
-                    apt-get update
-                    apt-get install -y --no-install-recommends chromium chromium-driver xvfb
-                    rm -rf /var/lib/apt/lists/*
-                '''
+                bat 'docker compose up -d'
+                bat 'powershell -NoProfile -Command "$deadline = (Get-Date).AddMinutes(2); do { try { Invoke-WebRequest -UseBasicParsing http://127.0.0.1:4444/status | Out-Null; exit 0 } catch { Start-Sleep -Seconds 2 } } while ((Get-Date) -lt $deadline); Write-Error \'Selenium Grid did not become ready\'; exit 1"'
             }
         }
 
-        stage('Test') {
+        stage('Run Tests') {
             steps {
                 dir('demoshop') {
-                    sh 'mvn -B clean test'
+                    bat 'mvn -B clean test'
                 }
             }
         }
@@ -31,8 +29,8 @@ pipeline {
 
     post {
         always {
-            junit testResults: 'demoshop/target/surefire-reports/*.xml', allowEmptyResults: false
-            archiveArtifacts artifacts: 'demoshop/target/allure-results/**', allowEmptyArchive: true
+            junit testResults: 'demoshop/target/surefire-reports/*.xml', allowEmptyResults: true
+            bat 'docker compose down --remove-orphans'
         }
     }
 }

@@ -3,6 +3,8 @@ package com.logwire;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 
 import org.junit.jupiter.api.AfterEach;
@@ -10,7 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -33,7 +36,15 @@ public class ProductTest {
     CheckoutCompletedPage ccp;
     @BeforeEach 
     public void setUp(){
-        driver = new ChromeDriver();
+        // driver = new ChromeDriver();
+        URL gridUrl = null;
+        try {
+            gridUrl = new URL("http://127.1.0.1:4444");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        ChromeOptions cho = new ChromeOptions();
+        driver = new RemoteWebDriver(gridUrl, cho);
         hp = new HomePage(driver);
         rg = new RegisterPage(driver);
         lp = new LoginPage(driver);
