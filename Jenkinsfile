@@ -15,7 +15,7 @@ pipeline {
         stage('Tests') {
             agent {
                 docker {
-                    image 'maven:3.8.3-openjdk-17'
+                    image 'maven:3.9.9-openjdk-17'
                     args '--entrypoint="" --shm-size=2g --network=shopdemo_default'
                     reuseNode true
                 }
