@@ -44,3 +44,4 @@ pipeline {
             sh 'docker compose down --remove-orphans || true'
         }
     }
+}
