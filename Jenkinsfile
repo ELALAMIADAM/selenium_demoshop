@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        COMPOSE_PROJECT_NAME = 'selennium_shopping'
+    }
+
     stages {
 
         stage('commencer selenium') {
@@ -16,7 +20,7 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3.9.9-amazoncorretto-17'
-                    args '--entrypoint="" --shm-size=2g --network=selennium_shopping'
+                    args '--entrypoint="" --shm-size=2g --network=selennium_shopping_default'
                     reuseNode true
                 }
             }
@@ -33,11 +37,10 @@ pipeline {
             }
         }
 
-        stage('Cleanup') {
-            steps {
-                sh 'docker compose down || true'
-            }
-        }
+    }
 
-    } 
-} 
+    post {
+        always {
+            sh 'docker compose down --remove-orphans || true'
+        }
+    }
