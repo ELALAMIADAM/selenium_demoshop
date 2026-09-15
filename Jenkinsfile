@@ -1,16 +1,12 @@
 pipeline {
     agent any
 
-    environment {
-        COMPOSE_PROJECT_NAME = 'selennium_shopping'
-        DOCKER_HOST = 'unix:///var/run/docker.sock'
-    }
-
     stages {
 
         stage('commencer selenium') {
             steps {
-                sh 'docker compose down --remove-orphans || true'
+                // sh 'docker rm -f selenium-hub || true'
+                // sh 'docker compose down --remove-orphans || true'
                 sh 'docker compose up -d'
                 sh 'docker compose ps'
             }
@@ -20,28 +16,28 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3.9.9-openjdk-17'
-                    args '--entrypoint="" --shm-size=2g --network=selennium_shopping_default'
+                    args '--entrypoint="" --shm-size=2g --network=selennium_shopping'
                     reuseNode true
                 }
             }
             steps {
-                sh 'mvn -f demoshop/pom.xml clean test -Dselenium.grid.url=http://selenium-hub:4444'
+                sh 'mvn -f demo/pom.xml clean test'
             }
         }
 
         stage('Report') {
             steps {
                 allure([
-                    results: [[path: 'demoshop/target/allure-results']]
+                    results: [[path: 'demo/target/allure-results']]
                 ])
             }
         }
 
-    }
-
-    post {
-        always {
-            sh 'docker compose down || true'
+        stage('Cleanup') {
+            steps {
+                sh 'docker compose down || true'
+            }
         }
-    }
-}
+
+    } 
+} 
