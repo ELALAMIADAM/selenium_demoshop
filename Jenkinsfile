@@ -3,14 +3,14 @@ pipeline {
 
     stages {
 
-        // stage('commencer selenium') {
-        //     steps {
-        //         sh 'docker rm -f selenium-hub || true'
-        //         sh 'docker compose down --remove-orphans || true'
-        //         sh 'docker compose up -d'
-        //         sh 'docker compose ps'
-        //     }
-        // }
+        stage('commencer selenium') {
+            steps {
+                sh 'docker rm -f selenium-hub || true'
+                sh 'docker compose down --remove-orphans || true'
+                sh 'docker compose up -d'
+                sh 'docker compose ps'
+            }
+        }
 
         stage('Tests') {
             agent {
