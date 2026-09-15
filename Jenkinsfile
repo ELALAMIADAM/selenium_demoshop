@@ -21,14 +21,14 @@ pipeline {
                 }
             }
             steps {
-                sh 'mvn -f demo/pom.xml clean test'
+                sh 'mvn -f demoshop/pom.xml clean test -Dselenium.grid.url=http://selenium-hub:4444'
             }
         }
 
         stage('Report') {
             steps {
                 allure([
-                    results: [[path: 'demo/target/allure-results']]
+                    results: [[path: 'demoshop/target/allure-results']]
                 ])
             }
         }
