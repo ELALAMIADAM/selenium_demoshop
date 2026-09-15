@@ -38,8 +38,8 @@ public class ProductTest {
     public void setUp(){
         // driver = new ChromeDriver();
         URL gridUrl = null;
-        try {
-            gridUrl = new URL("http://127.1.0.1:4444");
+            try {
+                gridUrl = new URL(System.getProperty("selenium.grid.url", "http://127.0.0.1:4444"));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
