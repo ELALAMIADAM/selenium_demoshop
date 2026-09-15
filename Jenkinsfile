@@ -16,7 +16,7 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3.9.9-eclipse-temurin-17'
-                    args '--entrypoint="" --shm-size=2g --network=selennium_shopping'
+                    args '--entrypoint="" --shm-size=2g '
                     reuseNode true
                 }
             }
